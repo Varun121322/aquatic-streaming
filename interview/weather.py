@@ -2,7 +2,6 @@ from typing import Any, Iterable, Generator
 
 
 def process_events(events: Iterable[dict[str, Any]]) -> Generator[dict[str, Any], None, None]:
-    # A dictionary from station name to another dictionary of high: float, low: float
     stations = {}
     last_sample_time_stamp = None
     
@@ -51,7 +50,7 @@ def process_events(events: Iterable[dict[str, Any]]) -> Generator[dict[str, Any]
                 stations.clear()
                 last_sample_time_stamp = None
             else:
-                raise ValueError("Invalid command type")
+                raise ValueError("Please verify input.")
         else:
-            raise ValueError("Invalid message type")
+            raise ValueError("Please verify input.")
         
