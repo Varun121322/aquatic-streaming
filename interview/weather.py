@@ -27,4 +27,31 @@ def process_events(events: Iterable[dict[str, Any]]) -> Generator[dict[str, Any]
                     stations[name]["high"] = temperature
                 if temperature < stations[name]["low"]:
                     stations[name]["low"] = temperature
+        elif message_type == "control":
+            command = message.get("command")
+            if command is None:
+                print("Command field missing")
+            if last_sample_time_stamp is None:
+                continue
+            if command == "snapshot":
+                stations_snapshot = {
+                    name: {"high": vals["high"], "low": vals["low"]}
+                    for name, vals in stations.items()
+                }
+                yield {
+                    "type": "snapshot",
+                    "asOf": last_sample_time_stamp,
+                    "stations": stations_snapshot
+                }
+            elif command == "reset":
+                yield{
+                    "type": "reset",
+                    "asOf": last_sample_time_stamp
+                }
+                stations.clear()
+                last_sample_time_stamp = None
+            else:
+                raise ValueError("Invalid command type")
+        else:
+            raise ValueError("Invalid message type")
         
